@@ -1,4 +1,4 @@
-package com.example.kakacommunitymanager;
+package com.example.kakacommunitymanager.community;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,10 +13,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.kakacommunitymanager.constant.HomeArticle;
+import com.example.kakacommunitymanager.constant.HttpUtil;
+import com.example.kakacommunitymanager.constant.MyApplication;
+import com.example.kakacommunitymanager.R;
+import com.example.kakacommunitymanager.search.SearchActivity;
 import com.scwang.smart.refresh.footer.ClassicsFooter;
 import com.scwang.smart.refresh.header.ClassicsHeader;
 import com.scwang.smart.refresh.layout.api.RefreshLayout;
-import com.scwang.smart.refresh.layout.constant.SpinnerStyle;
 import com.scwang.smart.refresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smart.refresh.layout.listener.OnRefreshListener;
 
@@ -30,7 +34,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Response;
 
-import static com.example.kakacommunitymanager.Constant.BASE_ADDRESS;
+import static com.example.kakacommunitymanager.constant.Constant.BASE_ADDRESS;
 
 public class ManagerActivity extends AppCompatActivity {
 
@@ -44,6 +48,8 @@ public class ManagerActivity extends AppCompatActivity {
 
     private ImageView errorImage;
 
+    private ImageView search;
+
     private ProgressDialog progressDialog;
 
     private int curPage = 1;
@@ -56,6 +62,7 @@ public class ManagerActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        search = (ImageView)findViewById(R.id.community_search);
         errorImage = (ImageView) findViewById(R.id.community_error);
         refreshLayout = (RefreshLayout) findViewById(R.id.community_swipe_refresh_layout);
         initRefreshView();
@@ -65,19 +72,31 @@ public class ManagerActivity extends AppCompatActivity {
         showProgressDialog();
         getCommunityJSON(1);
         communityAdapter.setOnItemCLickListener(new CommunityAdapter.OnItemClickListener() {
+
             @Override
-            public void onItemClick(int position) {
+            public void onUpdateClick(int position) {
+
             }
 
             @Override
-            public void onItemCollectClick(int position) {
-
+            public void onDeleteClick(int position) {
+                communityArticleList.remove(position);
+                communityAdapter.notifyDataSetChanged();
+                Toast.makeText(ManagerActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
             }
         });
         errorImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getCommunityJSON(1);
+            }
+        });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ManagerActivity.this, SearchActivity.class);
+                startActivity(intent);
             }
         });
     }

@@ -1,18 +1,29 @@
-package com.example.kakacommunitymanager;
+package com.example.kakacommunitymanager.community;
 
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.kakacommunitymanager.constant.HomeArticle;
+import com.example.kakacommunitymanager.constant.HttpUtil;
+import com.example.kakacommunitymanager.R;
+
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
+import static com.example.kakacommunitymanager.constant.Constant.BASE_ADDRESS;
 
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.ViewHolder> {
 
@@ -58,7 +69,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        HomeArticle homeArticle = communityArticleList.get(position);
+        final HomeArticle homeArticle = communityArticleList.get(position);
         holder.author.setText(homeArticle.getAuthor());
         holder.time.setText(homeArticle.getNiceDate());
         holder.title.setText(String.valueOf(Html.fromHtml(homeArticle.getTitle())));
@@ -85,19 +96,14 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
         holder.update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickListener.onItemClick(position);
+                onItemClickListener.onUpdateClick(position);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickListener.onItemClick(position);
-            }
-        });
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickListener.onItemClick(position);
+                sendDeleteRequest(homeArticle.getDiscussPostId());
+                onItemClickListener.onDeleteClick(position);
             }
         });
     }
@@ -108,12 +114,32 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.View
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int position);
-        void onItemCollectClick(int position);
+        void onUpdateClick(int position);
+        void onDeleteClick(int position);
     }
 
     public void setOnItemCLickListener(OnItemClickListener onItemCLickListener) {
         this.onItemClickListener = onItemCLickListener;
+    }
+
+    private void sendDeleteRequest(String id) {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("id", id)
+                .build();
+        HttpUtil.OkHttpPOST(BASE_ADDRESS + "/discuss" + "/delete", requestBody, new okhttp3.Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                if(responseData.contains("0")) {
+                    //Toast.makeText(MyApplication.getContext(), "删除成功", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }

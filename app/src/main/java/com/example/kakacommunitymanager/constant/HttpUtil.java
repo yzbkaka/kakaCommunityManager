@@ -1,4 +1,4 @@
-package com.example.kakacommunitymanager;
+package com.example.kakacommunitymanager.constant;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

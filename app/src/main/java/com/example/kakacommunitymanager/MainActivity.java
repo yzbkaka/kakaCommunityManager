@@ -4,17 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.kakacommunitymanager.community.ManagerActivity;
+import com.example.kakacommunitymanager.constant.HttpUtil;
+import com.example.kakacommunitymanager.constant.StringUtil;
 import com.google.android.material.textfield.TextInputLayout;
-
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -23,7 +22,7 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.kakacommunitymanager.Constant.BASE_ADDRESS;
+import static com.example.kakacommunitymanager.constant.Constant.BASE_ADDRESS;
 
 public class MainActivity extends AppCompatActivity {
 

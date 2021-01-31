@@ -1,4 +1,4 @@
-package com.example.kakacommunitymanager;
+package com.example.kakacommunitymanager.constant;
 
 public class HomeArticle {
 
